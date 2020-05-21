@@ -1,0 +1,146 @@
+<div class="table-responsive mb-2">
+    <p-table [columns]="dataColumns" [value]="values" [paginator]="true" [rows]="dataFilter.perPage" [lazy]="lazy"
+        (onLazyLoad)="handleLazyEvent($event)" [totalRecords]="totalRecords" [loading]="loading"
+        [rowsPerPageOptions]="pageOptions" (selectionChange)="handleSelectionChange($event)"
+        [(selection)]="selectedRows" [lazyLoadOnInit]="false" [showCurrentPageReport]="true"
+        [rowTrackBy]="trackByFunction" tableStyleClass="table table-sm table-nowrap card-table"
+        currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries" paginatorDropdownAppendTo="body"
+        [alwaysShowPaginator]="false">
+
+        <ng-template pTemplate="header" let-columns>
+            <tr>
+                <ng-container *ngFor="let col of columns">
+
+                    <ng-container [ngSwitch]="col.type">
+
+                        <!--Checkbox-->
+                        <ng-container *ngSwitchCase="columnType.checkbox">
+                            <th style="width:3em">
+                                <p-tableHeaderCheckbox></p-tableHeaderCheckbox>
+                            </th>
+                        </ng-container>
+
+                        <ng-container *ngSwitchDefault>
+
+                            <!--Sorting-->
+                            <ng-container *ngIf="col.sortKey">
+                                <th [pSortableColumn]="col.sortKey" [style.width.%]="col.width>0?col.width:''">
+                                    {{col.label}} <p-sortIcon [field]="col.key"></p-sortIcon>
+                                </th>
+                            </ng-container>
+
+                            <!--No Sorting-->
+                            <ng-container *ngIf="!col.sortKey">
+                                <th [style.width.%]="col.width>0?col.width:''">{{col.label}}</th>
+                            </ng-container>
+
+                        </ng-container>
+
+                    </ng-container>
+
+                </ng-container>
+
+                <th *ngIf="actionColumns.length>0">{{actionColumnName}}</th>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="body" let-rowData let-columns="columns">
+            <tr>
+                <!--Data Column-->
+                <td *ngFor="let col of columns" class="{{col.cssClass}}">
+
+                    <ng-container [ngSwitch]="col.type">
+
+                        <!--Checkbox-->
+                        <ng-container *ngSwitchCase="columnType.checkbox">
+                            <ng-container *ngIf="canRenderDataColumn(col,rowData)">
+                                <p-tableCheckbox [value]="rowData"></p-tableCheckbox>
+                            </ng-container>
+                        </ng-container>
+
+                        <!--Text-->
+                        <ng-container *ngSwitchCase="columnType.text">{{rowData[col.key]}}</ng-container>
+
+                        <!--Switch-->
+                        <ng-container *ngSwitchCase="columnType.switch">
+                            <ng-container *ngIf="canRenderDataColumn(col,rowData)">
+                                <p-inputSwitch (onChange)="handleAction(col,rowData)" [(ngModel)]="rowData[col.key]">
+                                </p-inputSwitch>
+                            </ng-container>
+                        </ng-container>
+
+                        <!--Number-->
+                        <ng-container *ngSwitchCase="columnType.number">
+                            {{getNumber(rowData[col.key])}}
+                        </ng-container>
+
+                        <!--Date-->
+                        <ng-container *ngSwitchCase="columnType.date">
+                            {{getDate(rowData[col.key])}}
+                        </ng-container>
+
+                    </ng-container>
+
+                </td>
+
+                <!--Action Column-->
+                <td *ngIf="actionColumns.length>0">
+
+                    <!--For Inline View-->
+                    <ng-container *ngIf="actionView=='inline'">
+                        <div>
+                            <span class="action-row" *ngFor="let col of actionColumns">
+                                <ng-container *ngIf="canRenderActionColumn(col,rowData)">
+                                    <!--With Button-->
+                                    <button type="button" class="btn btn-sm" *ngIf="col.icon"
+                                        (click)="handleAction(col,rowData)" pTooltip="{{col.label}}"><i
+                                            class="{{col.icon}}" [ngStyle]="{'color': col.color}"></i></button>
+                                    <!--Without Button-->
+                                    <button type="button" class="btn btn-sm btn-link" *ngIf="!col.icon"
+                                        (click)="handleAction(col,rowData)">{{col.label}}</button>
+                                </ng-container>
+                            </span>
+                        </div>
+                    </ng-container>
+
+                    <!--For Block view-->
+                    <ng-container *ngIf="actionView=='block'">
+                        <div ngDropdown>
+                            <button type="button" class="btn btn-sm btn-link" ngDropdownControl><i
+                                    class="pi pi-ellipsis-v"></i></button>
+                            <div ngDropdownContent dropdownClass="shadow rounded">
+                                <ng-container *ngFor="let col of actionColumns">
+                                    <ng-container *ngIf="canRenderActionColumn(col,rowData)">
+                                        <button class="dropdown-item" (click)="handleAction(col,rowData)">
+                                            <ng-container *ngIf="col.icon">
+                                                <i class="{{col.icon}}" [ngStyle]="{'color': col.color}"></i>
+                                            </ng-container>
+                                            {{col.label}}
+                                        </button>
+                                    </ng-container>
+                                </ng-container>
+                            </div>
+                        </div>
+
+                    </ng-container>
+                </td>
+            </tr>
+        </ng-template>
+
+        <ng-template pTemplate="emptymessage" let-columns>
+            <tr>
+                <td [attr.colspan]="noRecordColumnSpan" align="center">
+                    No records found
+                </td>
+            </tr>
+        </ng-template>
+
+    </p-table>
+</div>
+
+<p-confirmDialog #cd [key]="dialogKey" appendTo="body" icon="pi pi-exclamation-triangle" header="Confirmation">
+    <p-footer>
+        <button type="button" class="btn btn-primary btn-sm confim-btn" (click)="cd.accept()">Yes</button>
+        <button type="button" class="btn btn-danger btn-sm confim-btn" (click)="cd.reject()">No</button>
+    </p-footer>
+</p-confirmDialog>

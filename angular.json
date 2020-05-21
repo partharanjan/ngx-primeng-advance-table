@@ -123,6 +123,46 @@
           }
         }
       }
+    },
+    "ngx-primeng-grid": {
+      "projectType": "library",
+      "root": "projects/ngx-primeng-grid",
+      "sourceRoot": "projects/ngx-primeng-grid/src",
+      "prefix": "ngx",
+      "architect": {
+        "build": {
+          "builder": "@angular-devkit/build-ng-packagr:build",
+          "options": {
+            "tsConfig": "projects/ngx-primeng-grid/tsconfig.lib.json",
+            "project": "projects/ngx-primeng-grid/ng-package.json"
+          },
+          "configurations": {
+            "production": {
+              "tsConfig": "projects/ngx-primeng-grid/tsconfig.lib.prod.json"
+            }
+          }
+        },
+        "test": {
+          "builder": "@angular-devkit/build-angular:karma",
+          "options": {
+            "main": "projects/ngx-primeng-grid/src/test.ts",
+            "tsConfig": "projects/ngx-primeng-grid/tsconfig.spec.json",
+            "karmaConfig": "projects/ngx-primeng-grid/karma.conf.js"
+          }
+        },
+        "lint": {
+          "builder": "@angular-devkit/build-angular:tslint",
+          "options": {
+            "tsConfig": [
+              "projects/ngx-primeng-grid/tsconfig.lib.json",
+              "projects/ngx-primeng-grid/tsconfig.spec.json"
+            ],
+            "exclude": [
+              "**/node_modules/**"
+            ]
+          }
+        }
+      }
     }},
   "defaultProject": "primeng-table"
 }
