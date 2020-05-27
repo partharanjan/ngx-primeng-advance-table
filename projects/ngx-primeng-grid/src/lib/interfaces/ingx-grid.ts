@@ -30,7 +30,7 @@ export interface INgxGridInstance<T> {
 }
 
 export interface INgxGridResult<T> {
-    items: T[];
+    results: T[];
     total: number;
 }
 

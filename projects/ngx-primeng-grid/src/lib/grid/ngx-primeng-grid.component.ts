@@ -80,7 +80,7 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
 
   constructor(private confirmationService: ConfirmationService) {
     // inti filter
-    this.filter = { pageNo: 0, perPage: 10 };
+    this.dataFilter = { pageNo: 0, perPage: 10 };
   }
 
   ngOnInit() {
@@ -94,12 +94,12 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
 
   // get row values
   get values() {
-    return this.tableResult ? this.tableResult.items : []
+    return this.tableResult ? this.tableResult.results : []
   }
 
   // lazy load
   handleLazyEvent(event: any) {
-    if (this.filter && event) {
+    if (this.dataFilter && event) {
       this.loading = true;
       // get page Number
       this.dataFilter.pageNo = Number(event.first);
