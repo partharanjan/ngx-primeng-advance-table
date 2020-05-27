@@ -94,7 +94,7 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
 
   // get row values
   get values() {
-    return this.tableResult ? this.tableResult.results : []
+    return this.tableResult ? this.tableResult.results : [];
   }
 
   // lazy load
