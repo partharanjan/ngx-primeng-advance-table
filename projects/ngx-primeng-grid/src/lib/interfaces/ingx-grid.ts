@@ -9,7 +9,7 @@ export enum INgxGridColumnType {
 
 export class INgxGridColumnProperty {
     customRender: boolean = false;
-    pipe: string = null;
+    format?: string = null;
 }
 
 export interface INgxGridColumn {
@@ -21,7 +21,8 @@ export interface INgxGridColumn {
     color?: string;
     width?: number;
     property: INgxGridColumnProperty;
-    cssClass?: string;
+    tdClass?: string;
+    thClass?: string;
 }
 
 export interface INgxGridInstance<T> {
@@ -41,6 +42,13 @@ export interface INgxGridFilter {
     sortOrder?: number;
 }
 
-export class INgxGridNumberColumnProperty extends INgxGridColumnProperty {
-    pipe: string;
+export class INgxGridDateColumnProperty extends INgxGridColumnProperty {
+    type: NgxGridDateType = NgxGridDateType.ticks;
+    timeZone: string = null;
+}
+
+export enum NgxGridDateType {
+    ticks = 'ticks',
+    json = 'json',
+    str = 'str',
 }

@@ -1,7 +1,8 @@
 import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
-import { INgxGridColumnType, INgxGridResult, INgxGridFilter, INgxGridColumn, INgxGridInstance } from '../interfaces/ingx-grid';
+import { INgxGridColumnType, INgxGridResult, INgxGridFilter, INgxGridColumn, INgxGridInstance, INgxGridDateColumnProperty, NgxGridDateType } from '../interfaces/ingx-grid';
 
 import { ConfirmationService } from 'primeng/api';
+import { DecimalPipe, DatePipe } from '@angular/common';
 
 @Component({
   selector: 'ngx-primeng-grid',
@@ -28,6 +29,12 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
   dataColumns: INgxGridColumn[] = [];
   // dialog key
   dialogKey: string;
+  // decimal pipe
+  private decimalPipe = new DecimalPipe('en-US');
+  // date pipe
+  private datePipe = new DatePipe('en-US');
+  //
+  private epochTicks: number = 621355968000000000;
 
   // key
   @Input() key: string;
@@ -49,6 +56,8 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
   @Input() lazy: boolean = true;
   // action view
   @Input() actionView: string = 'block';
+  // table style class
+  @Input() tableStyleClass: string = 'table table-sm table-wrap card-table';
 
   @Input()
   set columns(values: INgxGridColumn[]) {
@@ -155,12 +164,59 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
     return item[this.key];
   }
 
-  getNumber(data: any): any {
-    return data;
+  private toFloat(value: any, defValue = 0): number {
+    if (value) {
+      const v = parseFloat(value);
+      if (isNaN(v)) {
+        return defValue;
+      }
+      return v;
+    }
+    return defValue;
+  }
+  
+  // get number data
+  getNumberView(col: INgxGridColumn, data: any): any {
+    if (data) {
+      const value = this.toFloat(data);
+
+      return `${this.decimalPipe.transform(value, col.property.format ? col.property.format : '1.2-2')}`;
+    }
+    return null;
   }
 
-  getDate(data: any): any {
-    return data;
+  private ticksToDate(ticks: number): Date {
+    if (ticks) {
+      const ticksPerMillisecond = 10000;
+      const ticksSinceEpoch = ticks - this.epochTicks;
+      const millisecondsSinceEpoch = ticksSinceEpoch / ticksPerMillisecond;
+      return new Date(millisecondsSinceEpoch);
+    }
+    return null;
+  }
+
+  private isValidDate(date: Date): boolean {
+    if (date) {
+      return isNaN(date.getTime()) ? false : true;
+    }
+  }
+
+  getDateView(col: INgxGridColumn, data: any): any {
+    if (data) {
+      const dtProperty = col.property as INgxGridDateColumnProperty;
+      switch (dtProperty.type) {
+        case NgxGridDateType.ticks: {
+          const ticks = this.toFloat(data);
+          if (ticks > 0) {
+            const dt = this.ticksToDate(ticks);
+            if (this.isValidDate(dt)) {
+              return this.datePipe.transform(dt, dtProperty.format, dtProperty.timeZone ? dtProperty.timeZone : undefined);
+            }
+          }
+        } break;
+      }
+    }
+    return null;
   }
 
   get noRecordColumnSpan(): number {

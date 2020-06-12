@@ -3,7 +3,7 @@
         (onLazyLoad)="handleLazyEvent($event)" [totalRecords]="totalRecords" [loading]="loading"
         [rowsPerPageOptions]="pageOptions" (selectionChange)="handleSelectionChange($event)"
         [(selection)]="selectedRows" [lazyLoadOnInit]="false" [showCurrentPageReport]="true"
-        [rowTrackBy]="trackByFunction" tableStyleClass="table table-sm table-nowrap card-table"
+        [rowTrackBy]="trackByFunction" [tableStyleClass]="tableStyleClass"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         paginatorDropdownAppendTo="body">
 
@@ -24,14 +24,16 @@
 
                             <!--Sorting-->
                             <ng-container *ngIf="col.sortKey">
-                                <th [pSortableColumn]="col.sortKey" [style.width.%]="col.width>0?col.width:''">
+                                <th [pSortableColumn]="col.sortKey" [style.width.%]="col.width>0?col.width:''"
+                                    class="{{col.thClass}}">
                                     {{col.label}} <p-sortIcon [field]="col.key"></p-sortIcon>
                                 </th>
                             </ng-container>
 
                             <!--No Sorting-->
                             <ng-container *ngIf="!col.sortKey">
-                                <th [style.width.%]="col.width>0?col.width:''">{{col.label}}</th>
+                                <th [style.width.%]="col.width>0?col.width:''" class="{{col.thClass}}">{{col.label}}
+                                </th>
                             </ng-container>
 
                         </ng-container>
@@ -47,7 +49,7 @@
         <ng-template pTemplate="body" let-rowData let-columns="columns">
             <tr>
                 <!--Data Column-->
-                <td *ngFor="let col of columns" class="{{col.cssClass}}">
+                <td *ngFor="let col of columns" class="{{col.tdClass}}">
 
                     <ng-container [ngSwitch]="col.type">
 
@@ -71,12 +73,12 @@
 
                         <!--Number-->
                         <ng-container *ngSwitchCase="columnType.number">
-                            {{getNumber(rowData[col.key])}}
+                            {{getNumberView(col,rowData[col.key])}}
                         </ng-container>
 
                         <!--Date-->
                         <ng-container *ngSwitchCase="columnType.date">
-                            {{getDate(rowData[col.key])}}
+                            {{getDateView(col,rowData[col.key])}}
                         </ng-container>
 
                     </ng-container>
