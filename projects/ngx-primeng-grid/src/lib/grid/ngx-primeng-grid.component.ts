@@ -11,8 +11,7 @@ import { DecimalPipe, DatePipe } from '@angular/common';
 })
 export class NgxPrimengGridComponent implements OnInit, OnDestroy {
 
-  // default loading is false
-  loading: boolean = false;
+
   // define column type
   columnType = INgxGridColumnType;
   // store resulsts
@@ -59,6 +58,11 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
   // table style class
   @Input() tableStyleClass: string = 'table table-sm table-wrap card-table';
 
+  // loading
+  @Input() loading: boolean = false;
+  // load when init
+  @Input() initLoad: boolean = false;
+
   @Input()
   set columns(values: INgxGridColumn[]) {
     if (values && Array.isArray(values)) {
@@ -75,7 +79,6 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
       this.selectedRows = [];
       this.tableResult = value;
       this.totalRecords = value.total;
-      this.loading = false;
     }
   }
 
@@ -109,7 +112,6 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
   // lazy load
   handleLazyEvent(event: any) {
     if (this.dataFilter && event) {
-      this.loading = true;
       // get page Number
       this.dataFilter.pageNo = Number(event.first);
       this.dataFilter.perPage = Number(event.rows);
@@ -174,7 +176,7 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
     }
     return defValue;
   }
-  
+
   // get number data
   getNumberView(col: INgxGridColumn, data: any): any {
     if (data) {

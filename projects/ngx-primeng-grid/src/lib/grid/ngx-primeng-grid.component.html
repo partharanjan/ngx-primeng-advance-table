@@ -2,7 +2,7 @@
     <p-table [columns]="dataColumns" [value]="values" [paginator]="true" [rows]="dataFilter.perPage" [lazy]="lazy"
         (onLazyLoad)="handleLazyEvent($event)" [totalRecords]="totalRecords" [loading]="loading"
         [rowsPerPageOptions]="pageOptions" (selectionChange)="handleSelectionChange($event)"
-        [(selection)]="selectedRows" [lazyLoadOnInit]="false" [showCurrentPageReport]="true"
+        [(selection)]="selectedRows" [lazyLoadOnInit]="initLoad" [showCurrentPageReport]="true"
         [rowTrackBy]="trackByFunction" [tableStyleClass]="tableStyleClass"
         currentPageReportTemplate="Showing {first} to {last} of {totalRecords} entries"
         paginatorDropdownAppendTo="body">
