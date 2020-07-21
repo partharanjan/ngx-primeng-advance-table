@@ -1,17 +1,19 @@
-import { Component, OnInit, OnDestroy, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, OnDestroy, Input, Output, EventEmitter, ContentChildren, QueryList, AfterContentInit, TemplateRef } from '@angular/core';
 import { INgxGridColumnType, INgxGridResult, INgxGridFilter, INgxGridColumn, INgxGridInstance, INgxGridDateColumnProperty, NgxGridDateType } from '../interfaces/ingx-grid';
 
 import { ConfirmationService } from 'primeng/api';
 import { DecimalPipe, DatePipe } from '@angular/common';
+import { GridCustomTemplate } from '../directives/grid.template';
 
 @Component({
   selector: 'ngx-primeng-grid',
   templateUrl: './ngx-primeng-grid.component.html',
   styleUrls: ['./ngx-primeng-grid.component.scss']
 })
-export class NgxPrimengGridComponent implements OnInit, OnDestroy {
+export class NgxPrimengGridComponent implements OnInit, AfterContentInit, OnDestroy {
 
-
+  // templates
+  @ContentChildren(GridCustomTemplate) templates: QueryList<GridCustomTemplate>;
   // define column type
   columnType = INgxGridColumnType;
   // store resulsts
@@ -90,6 +92,9 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
     }
   }
 
+  // custom template
+  customColumnTemplate: TemplateRef<any>;
+
   constructor(private confirmationService: ConfirmationService) {
     // inti filter
     this.dataFilter = { pageNo: 0, perPage: 10 };
@@ -98,6 +103,18 @@ export class NgxPrimengGridComponent implements OnInit, OnDestroy {
   ngOnInit() {
     // init dialog key
     this.dialogKey = `NgxGrid_${new Date().getTime()}_dialog`;
+  }
+
+  ngAfterContentInit() {
+    if (this.templates) {
+      this.templates.forEach((item) => {
+        switch (item.getType()) {
+          case 'custom': {
+            this.customColumnTemplate = item.template;
+          } break;
+        }
+      });
+    }
   }
 
   private clone<T>(obj: T): T {

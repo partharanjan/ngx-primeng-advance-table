@@ -4,7 +4,8 @@ export enum INgxGridColumnType {
     switch = 'switch',
     date = 'date',
     action = 'action',
-    checkbox = 'checkbox'
+    checkbox = 'checkbox',
+    custom = 'custom'
 }
 
 export class INgxGridColumnProperty {

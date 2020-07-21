@@ -42,7 +42,7 @@
 
                 </ng-container>
 
-                <th *ngIf="actionColumns.length>0">{{actionColumnName}}</th>
+                <th *ngIf="actionColumns.length>0" style="width: 8%;"></th>
             </tr>
         </ng-template>
 
@@ -81,6 +81,11 @@
                             {{getDateView(col,rowData[col.key])}}
                         </ng-container>
 
+                        <!--Custom-->
+                        <ng-container *ngSwitchCase="columnType.custom">
+                            <ng-container *ngTemplateOutlet="customColumnTemplate;context:{row:rowData,column:col}">
+                            </ng-container>
+                        </ng-container>
                     </ng-container>
 
                 </td>

@@ -11,12 +11,17 @@ import { TooltipModule } from 'primeng/tooltip';
 import { AngularDropdownModule } from 'angular-dropdown';
 
 import { NgxPrimengGridComponent } from './grid/ngx-primeng-grid.component';
+import { GridCustomTemplate } from './directives/grid.template';
 
 
+const components = [
+  NgxPrimengGridComponent,
+  GridCustomTemplate
+];
 
 
 @NgModule({
-  declarations: [NgxPrimengGridComponent],
+  declarations: [...components],
   imports: [
     CommonModule,
     FormsModule,
@@ -28,6 +33,6 @@ import { NgxPrimengGridComponent } from './grid/ngx-primeng-grid.component';
     TooltipModule
   ],
   providers: [ConfirmationService],
-  exports: [NgxPrimengGridComponent]
+  exports: [...components]
 })
 export class NgxPrimengGridModule { }
