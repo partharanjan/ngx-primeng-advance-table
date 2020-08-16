@@ -187,21 +187,17 @@ export class NgxPrimengGridComponent implements OnInit, AfterContentInit, OnDest
     if (value) {
       const v = parseFloat(value);
       if (isNaN(v)) {
-        return defValue;
+        return parseFloat(defValue.toFixed(2));
       }
-      return v;
+      return parseFloat(v.toFixed(2));
     }
     return defValue;
   }
 
   // get number data
   getNumberView(col: INgxGridColumn, data: any): any {
-    if (data) {
-      const value = this.toFloat(data);
-
-      return `${this.decimalPipe.transform(value, col.property.format ? col.property.format : '1.2-2')}`;
-    }
-    return null;
+    let value: number = data ? this.toFloat(data) : 0;
+    return `${this.decimalPipe.transform(value, col.property.format ? col.property.format : '1.2-2')}`;
   }
 
   private ticksToDate(ticks: number): Date {
@@ -233,6 +229,10 @@ export class NgxPrimengGridComponent implements OnInit, AfterContentInit, OnDest
             }
           }
         } break;
+        case NgxGridDateType.json:
+        default: {
+          return this.datePipe.transform(data, dtProperty.format, dtProperty.timeZone ? dtProperty.timeZone : undefined);
+        }
       }
     }
     return null;

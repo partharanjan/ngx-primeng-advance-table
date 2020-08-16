@@ -50,6 +50,5 @@ export class INgxGridDateColumnProperty extends INgxGridColumnProperty {
 
 export enum NgxGridDateType {
     ticks = 'ticks',
-    json = 'json',
-    str = 'str',
+    json = 'json'
 }
